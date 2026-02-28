@@ -1,26 +1,334 @@
-@import "tailwindcss";
-
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --canvas-ink: #11100d;
+  --canvas-paper: #f5f0e6;
+  --canvas-paper-alt: #efe7d8;
+  --canvas-accent: #c63e3a;
+  --canvas-accent-alt: #1246c9;
+  --canvas-muted: #716a5f;
+  --shadow-soft: 0 20px 45px rgb(0 0 0 / 0.12);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+* {
+  box-sizing: border-box;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), "Segoe UI", sans-serif;
+  color: var(--canvas-ink);
+  background: linear-gradient(150deg, var(--canvas-paper), var(--canvas-paper-alt));
+}
+
+a {
+  color: inherit;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+.grainLayer {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgb(0 0 0 / 0.08) 0.6px, transparent 0.6px);
+  background-size: 4px 4px;
+  pointer-events: none;
+  opacity: 0.25;
+}
+
+.landingRoot {
+  position: relative;
+  min-height: 100vh;
+  padding: 4rem clamp(1.2rem, 3vw, 3.5rem) 3rem;
+  overflow: hidden;
+}
+
+.landingHero {
+  position: relative;
+  max-width: 54rem;
+  margin-inline: auto;
+  display: grid;
+  gap: 1.25rem;
+  animation: riseIn 420ms ease-out;
+}
+
+.eyebrow {
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--canvas-muted);
+  font-size: 0.8rem;
+}
+
+.landingHero h1 {
+  margin: 0;
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: clamp(3rem, 9vw, 6.8rem);
+  line-height: 0.95;
+  font-weight: 600;
+}
+
+.landingHero h1 span {
+  color: var(--canvas-accent);
+  margin-left: 0.15em;
+}
+
+.leadCopy {
+  margin: 0;
+  max-width: 40rem;
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  line-height: 1.7;
+  color: #2c2924;
+}
+
+.heroActions {
+  display: flex;
+  gap: 0.85rem;
+  flex-wrap: wrap;
+}
+
+.primaryAction,
+.ghostAction {
+  border-radius: 999px;
+  padding: 0.72rem 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 180ms ease, opacity 180ms ease;
+  border: 1px solid transparent;
+}
+
+.primaryAction {
+  background: linear-gradient(130deg, var(--canvas-accent), #d76455);
+  color: #fff;
+  box-shadow: var(--shadow-soft);
+}
+
+.primaryAction:hover:not(:disabled),
+.ghostAction:hover {
+  transform: translateY(-1px);
+}
+
+.primaryAction:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.ghostAction {
+  background: rgb(255 255 255 / 0.8);
+  color: var(--canvas-ink);
+  border-color: rgb(17 16 13 / 0.2);
+  text-decoration: none;
+}
+
+.featureGrid {
+  margin: 3.2rem auto 0;
+  max-width: 58rem;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.featureGrid article {
+  background: rgb(255 255 255 / 0.65);
+  border: 1px solid rgb(17 16 13 / 0.1);
+  border-radius: 1.1rem;
+  padding: 1rem;
+  backdrop-filter: blur(6px);
+}
+
+.featureGrid h2 {
+  margin: 0 0 0.4rem;
+  font-size: 1rem;
+}
+
+.featureGrid p {
+  margin: 0;
+  line-height: 1.6;
+  color: #38342d;
+}
+
+.dialogBackdrop {
+  position: fixed;
+  inset: 0;
+  background: rgb(6 7 9 / 0.45);
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  z-index: 50;
+}
+
+.dialogSurface {
+  width: min(31rem, 100%);
+  background: #fffefb;
+  border-radius: 1rem;
+  border: 1px solid rgb(0 0 0 / 0.12);
+  box-shadow: var(--shadow-soft);
+  padding: 1.2rem;
+  animation: riseIn 190ms ease-out;
+}
+
+.dialogSurface h2 {
+  margin: 0;
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 2rem;
+}
+
+.dialogSurface p {
+  margin-top: 0.4rem;
+  color: #4b453b;
+}
+
+.dialogForm {
+  display: grid;
+  gap: 0.48rem;
+  margin-top: 0.9rem;
+}
+
+.dialogForm label {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.dialogForm input {
+  border: 1px solid rgb(0 0 0 / 0.25);
+  border-radius: 0.8rem;
+  padding: 0.65rem 0.8rem;
+  background: #fff;
+}
+
+.dialogForm input:focus-visible {
+  outline: 2px solid var(--canvas-accent-alt);
+  outline-offset: 1px;
+}
+
+.dialogActions {
+  display: flex;
+  gap: 0.7rem;
+  margin-top: 0.7rem;
+}
+
+.formError {
+  margin: 0.35rem 0 0;
+  color: #b42318;
+  font-size: 0.9rem;
+}
+
+.boardRoot {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  min-height: 100vh;
+}
+
+.boardHeader {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.8rem 1rem;
+  background: rgb(255 255 255 / 0.82);
+  border-bottom: 1px solid rgb(17 16 13 / 0.15);
+  backdrop-filter: blur(8px);
+}
+
+.boardTitle {
+  margin: 0;
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: clamp(1.35rem, 2.5vw, 2rem);
+}
+
+.boardMeta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #4f4a42;
+  font-size: 0.92rem;
+}
+
+.boardChip {
+  border-radius: 999px;
+  padding: 0.24rem 0.58rem;
+  border: 1px solid rgb(17 16 13 / 0.18);
+  background: #fff;
+}
+
+.boardViewport {
+  min-height: 0;
+}
+
+.joinCard {
+  width: min(33rem, calc(100vw - 2rem));
+  margin: 6rem auto;
+  border-radius: 1.1rem;
+  background: #fff;
+  border: 1px solid rgb(17 16 13 / 0.15);
+  box-shadow: var(--shadow-soft);
+  padding: 1.1rem;
+}
+
+.joinCard h2 {
+  margin: 0;
+  font-size: 1.4rem;
+  font-family: var(--font-serif), Georgia, serif;
+}
+
+.joinCard p {
+  margin: 0.45rem 0 0;
+  color: #494236;
+}
+
+.joinCard form {
+  display: grid;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.joinCard input {
+  border-radius: 0.75rem;
+  border: 1px solid rgb(17 16 13 / 0.25);
+  padding: 0.65rem 0.75rem;
+}
+
+.roomLoading,
+.roomError {
+  min-height: calc(100vh - 56px);
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 1rem;
+}
+
+.roomError button {
+  margin-top: 0.9rem;
+}
+
+@keyframes riseIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 900px) {
+  .featureGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .boardHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }
