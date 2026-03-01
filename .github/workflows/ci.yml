@@ -33,3 +33,10 @@ jobs:
 
       - name: Build
         run: pnpm build
+        env:
+          # Placeholder values for build-time env validation (layout.tsx calls getServerEnv()
+          # during static prerendering). Real secrets are only needed at runtime, not at build
+          # time, and must be configured separately in the deployment environment.
+          LIVEBLOCKS_SECRET_KEY: sk_placeholder_for_ci_build
+          NEXT_PUBLIC_LIVEBLOCKS_PUBLIC_KEY: pk_placeholder_for_ci_build
+          NEXT_PUBLIC_CONVEX_URL: https://placeholder.convex.cloud
